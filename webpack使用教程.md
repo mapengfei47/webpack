@@ -635,3 +635,218 @@ resolve:{
 ~~~
 
 - 完成以上设置之后，项目即可正常运行
+
+### 6.5 总结
+
+- **在Webpack中使用 Vue**
+  1. 安装 Vue 的包：`npm i vue -S`
+  2. 由于在Webpack中，推荐使用 .vue 这个组件 模版定义组件，所以需要安装能解析这种文件的loader：`npm i vue-loader vue-template-complier -D`
+  3. 在 main.js 中导入 Vue模块：`Import Vue from 'vue'`
+  4. 定义一个 .vue结尾的文件组件，该文件包含三个部分组成，template,script,style
+  5. 在 main.js中使用 `Import login from './login.vue'`  命令导入这个组件
+  6. 创建 vm实例，VM实例中使用渲染函数render来渲染页面
+  7. 在页面中创建一个 id为app的div元素，作为VM要控制的区域
+
+
+
+## 七.在Webpack中使用 Vue-Router
+
+### 7.1 基本使用
+
+1. 安装 vue-router依赖模块
+
+   ```shell
+   npm i vue -S
+   npm i vue-router -S
+   ```
+
+2. 在main.js中引入Vue 和 vue-router模块,并显示的调用vue-router
+
+   ```js
+   import Vue from 'vue'
+   import VueRouter from 'vue-router'
+   Vue.use(VueRouter)
+   ```
+
+3. 在src目录下创建App.vue主页面模版文件
+
+   ```vue
+   <template>
+       <div>
+           <h1>APP组件</h1>
+       </div>
+   </template>
+   
+   <script>
+   export default {
+   
+   
+   }
+   </script>
+   
+   <style>
+   
+   </style>
+   ```
+
+4. 在 index文件中 创建一个 id 属性等于 `app`的div元素
+
+5. 在`src`目录下面新建文件夹，并在新建的文件夹下面创建`login.vue`和`register.vue`文件
+
+6. 将`login.vue`和`register.vue`组件应用到`app`主页模板上面去
+
+   ```Vue
+   <template>
+       <div>
+           <h1>APP组件</h1>
+           <router-link to='/login'>Login</router-link>
+           <router-link to='/register'>Register</router-link>
+   
+           <router-view></router-view>
+       </div>
+   </template>
+   
+   <script>
+   export default {
+   
+   
+   }
+   </script>
+   
+   <style>
+   
+   </style>
+   ```
+
+7. 在`main.js`文件中配置路由，创建`VM`实例，挂载`app`
+
+   ```js
+   import Vue from 'vue'
+   import VueRouter from 'vue-router'
+   
+   Vue.use(VueRouter)
+   
+   import app from './App.vue'
+   import login from './comp1/login.vue'
+   import register from './comp1/register.vue'
+   
+   var router = new VueRouter({
+       routes:[
+           {path:'/login',component:login},
+           {path:'/register',component:register}
+       ]
+   })
+   
+   var vm = new Vue({
+       el:'#app',
+       render: c => c(app),
+       router
+   })
+   ```
+
+8. 完成以上配置，启动项目即可
+
+
+
+### 7.2 路由嵌套
+
+在Webpack中使用路由的嵌套和在Vue中使用路由的嵌套基本类似
+
+1. 在路由基本使用的前提下，创建两个新的组件 account,money
+
+2. 在login组件中添加这两个组件的 <router-link>,并添加<router-view>容器
+
+   ```vue
+   <template>
+       <div>
+           <h1>Login success</h1>
+   
+           <router-link to='/login/account'>Account</router-link>
+           <router-link to='/login/money'>Money</router-link>
+   
+           <router-view></router-view>
+       </div>
+   </template>
+   ```
+
+3. 在路由配置中给login添加children属性，配置account,money路由即可
+
+   ```js
+   var router = new VueRouter({
+       routes:[
+           {path:'/login',component:login,children:[
+               {path:'account',component:account},
+               {path:'money',component:money},
+           ]},
+           {path:'/register',component:register}
+       ]
+   })
+   ```
+
+   
+
+### 7.3 抽离路由模块
+
+为避免入口文件 main.js里面的内容过多，我们推荐使用抽离路由的方式，为router单独创建一个文件夹
+
+- 在src目录下创建 router.js
+
+  ```js
+  import VueRouter from 'vue-router'
+  
+  import login from './comp1/login.vue'
+  import register from './comp1/register.vue'
+  import account from './comp2/account.vue'
+  import money from './comp2/money.vue'
+  
+  var router = new VueRouter({
+      routes:[
+          {path:'/login',component:login,children:[
+              {path:'account',component:account},
+              {path:'money',component:money},
+          ]},
+          {path:'/register',component:register}
+      ]
+  })
+  
+  export default router
+  ```
+
+- 在main.js入口文件中，引入router.js暴露router对象，挂载到app即可
+
+  ```js
+  import Vue from 'vue'
+  import VueRouter from 'vue-router'
+  Vue.use(VueRouter)
+  
+  import app from './App.vue'
+  import router from './router.js'
+  
+  var vm = new Vue({
+      el:'#app',
+      render: c => c(app),
+      router
+  })
+  ```
+
+  
+
+### 7.4 组件中style标签lang属性和scoped属性
+
+**<font color='red'>scoped属性：</font>**
+
+- 在 .vue文件中，可通过style标签设置组件的样式，但是默认情况下，设置的样式会被渲染到全局
+- 通过在 style标签中添加 scoped 属性，可以控制该样式只在该组件里面生效（建议使用）
+
+**<font color='red'>lang属性：</font>**
+
+- 在 .vue文件中，默认只能使用普通的 css样式语法，如果想要使用 scss，或者 less语法样式，需要给style标签设置 lang属性，并且指定具体的使用语法
+
+  ```vue
+  <style lang='less'>
+  
+  </style>
+  ```
+
+
+
