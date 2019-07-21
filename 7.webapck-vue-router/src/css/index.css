@@ -1,0 +1,17 @@
+li{
+    list-style: none;
+}
+
+.bg1{
+    width: 500px;
+    height: 500px;
+    background-repeat: no-repeat;
+    background: url('../images/beautifulCar.jpg')
+}
+
+.bg2{
+    width: 500px;
+    height: 500px;
+   background-repeat: no-repeat;
+    background: url('../images/狮子云.jpg')
+}
