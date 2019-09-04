@@ -41,6 +41,8 @@
 
 ### 1.2 什么是Webpack
 
+**<font color=red>核心定义：Webpack是一个模块打包工具</font>**
+
 **Webpack是一个前端的<font color='red'>项目构建工具</font>，它是基于node.js开发出来的一个前端工具**
 
 **如何实现上述的2种解决方案？**
@@ -54,11 +56,97 @@
 
 
 
-### 1.3 安装Webpack
+### 1.3 Webpack支持的规范
+
+**Webpack支持以下规范**
+
+1. CommonJS规范
+
+~~~js
+//moduleA.js 导出
+module.exports = function(){
+    //...
+}
+
+//moduleB.js 导入
+var moduleA = require('./moduleA')
+~~~
+
+2. AMD规范（推崇依赖前置）
+
+~~~js
+//moduleA.js 导入和导出
+define(['jquery','./math.js'],function($,math){
+    //AMD是依赖前置，将文件的依赖通过数组的形式导入，然后当作函数的参数传递进函数使用
+    
+    //通过return来实现对外接口
+    return helloWorld
+})
+~~~
+
+3. CMD规范（推崇就近依赖，需要用到的时候再去加载模块）
+
+   > 标准语法：define（id？，deps?，factory）
+   > - 一个文件一个模块，所以经常用文件名作为模块id
+   > - CMD推崇依赖就近，所以一般不在define的参数中写依赖，在factory中写
+   > - factory是一个函数，该函数拥有三个参数 function（require，exports，module）
+   >   - require：一个方法，接收模块标识，用来获取其它模块提供的接口
+   >   - exports：一个对象，用来向外提供模块接口
+   >   - module：一个对象，存储了与当前模块相关联的一些属性和方法
+
+~~~js
+define(fcuntion(require,exports,module){
+       var $ = require('jquery.js')
+       })
+~~~
+
+4. ES6规范
+
+- 在ES6规范中，使用import和exports命令来导入和导出文件
+
+~~~js
+//moduleA.js 导出
+
+//...内容区
+
+//导出函数(还可以导出对象以及任何你想导出的数据类型)
+exports.func = someFunc
+
+//moduleB.js 导入
+import func from './moduleA'
+~~~
+
+[掘金：AMD和CMD的区别](https://juejin.im/post/5a422b036fb9a045211ef789)
+
+
+
+### 1.4 安装Webpack
 
 1. 运行 `npm i webpack -g` 全局安装Webpack，这样就能在全局使用Webpack命令
    - 注意，如果是 `webpack4.0`以上的版本，需要全局安装 `Webpack-cli`
 2. 在项目根目录运行 `npm i webpack --save-dev`安装到项目依赖中
+
+
+
+### 1.5 命令行的使用
+
+- **查看Webpack版本信息**
+
+~~~shell
+npm info webpack
+~~~
+
+- **安装指定版本的Webpack**
+
+~~~shell
+npm install webpack@版本号
+~~~
+
+- **删除webpack**
+
+~~~shell
+npm uninstall webpack webpack-cli -g
+~~~
 
 
 
