@@ -176,3 +176,119 @@ import './inconFont.css'
 dom.innerHtml = "<div class='iconfont icon-notebook'></div>"
 ~~~
 
+
+
+## 二. plugin的使用
+
+### 2.1 html-webpack-plugin
+
+- **作用：**在打包结束之后自动生成一个HTML文件，并把打包生成的js自动引入到HTML界面中
+  - 无需我们手动在页面中引入打包的js文件
+- **用法**
+
+~~~js
+const htmlWebpackPlugin = require('html-webpack-plugin')
+
+plugins:[
+    new htmlWebpackPlugin(
+    	{template:'./src/index.html'}
+    )
+]
+~~~
+
+### 2.2 clean-webpack-plugin
+
+- **作用：**在打包之前，删除dist目录下的所有文件，使得dist目录下面存放的只是最近一次打包的文件
+- **用法**
+
+~~~js
+const { CleanWebpackPlugin } = require('clean-webpack-plugin')
+
+plugins:[
+    new CleanWebpackPlugin()
+]
+~~~
+
+
+
+devtool：配置js文件的映射，当我们的js文件有错误的时候，会直接定位到指定文件的指定行
+
+webpack --watch：打包并监控的命令，每当我们文件修改，会自动帮我们打包
+
+
+
+hmr：Hot-module-replacement（热模块更新）
+
+作用：在修改完文件之后，在界面上只更新相应修改的部分，不会将页面重新渲染
+
+
+
+## 三. webpack-dev-server的使用
+
+> 实现每次修改完文件之后，自动打包的方法有三种
+
+### 3.1 webpack --watch命令
+
+> 使用 webpack --watch命令进行打包之后，每次我们文件修改，都会自动帮我们打包，但是要我们主动刷新浏览器界面才会生效
+
+### 3.2 webpack-dev-server
+
+- 推荐使用方法
+
+> 使用webpack-dev-server是webpack自带的服务器类型模块，常用来实现如下功能
+>
+> - 文件修改后自动打包
+> - 通过设置端口，自动在服务器打开HTML界面
+> - 热加载
+> - ...
+
+**安装**
+
+~~~shell
+npm install webpack-dev-server -D
+~~~
+
+**配置**
+
+- 有两种方法可以配置webpack-dev-server
+
+1. 通过package.json里面的scripts命令行
+   - --port ：指定服务端口号
+   - --contentBase：指定打开基础目录
+   - --hot ：开启热加载
+   - --open：自动打开浏览器
+
+~~~json
+//package.json
+
+scripts:{
+    "dev": "webpack-dev-server --port 3000 --contentBase ./dist --hot --open"
+}
+~~~
+
+2. 通过webpack.config.js配置
+
+~~~json
+//package.json
+scripts:{
+    "dev": "webpack-dev-server"
+}
+~~~
+
+~~~js
+//webpack.config.js
+module.expotrs = {
+   //... 
+    devServer: {
+        port: '3000',
+        open: true,
+        contentBase: './dist',
+        hot: true,
+        hotOnly: true
+    }
+}
+~~~
+
+### 3.3 自定义服务器
+
+- 知道即可，实现略
