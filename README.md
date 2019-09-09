@@ -1,7 +1,3 @@
-```
-const RuleSet = require('webpack/lib/RuleSet')
-```
-
 # Webpack使用教程
 
 [TOC]
