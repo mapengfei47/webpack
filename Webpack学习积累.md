@@ -1,8 +1,6 @@
-# Webpack学习二
+# Webpack学习积累
 
 [TOC]
-
-
 
 ## 一. loader的使用
 
@@ -211,15 +209,51 @@ plugins:[
 
 
 
-devtool：配置js文件的映射，当我们的js文件有错误的时候，会直接定位到指定文件的指定行
+### 2.3 SplitChunksPlugin
 
-webpack --watch：打包并监控的命令，每当我们文件修改，会自动帮我们打包
+> **作用：**该插件通常用来配置webpack的代码分割
+
+**SplitChunksPlugin的默认配置**
+
+~~~js
+module.exports = {
+  //...
+  optimization: {
+    splitChunks: {
+      chunks: 'async',	//指定要优化的模块，取值为initial（同步），async（异步），all（全部）。
+      minSize: 30000,	// 打包文件的最小大小
+      maxSize: 0,
+      minChunks: 1,
+      maxAsyncRequests: 5,
+      maxInitialRequests: 3,
+      automaticNameDelimiter: '~',		//生成名称的分隔符，eg:vendors~main.js
+      automaticNameMaxLength: 30,		//生成块名称的最大字符数
+      name: true,
+      cacheGroups: {
+        vendors: {
+          test: /[\\/]node_modules[\\/]/,
+          priority: -10
+        },
+        default: {
+          minChunks: 2,
+          priority: -20,
+          reuseExistingChunk: true
+        }
+      }
+    }
+  }
+};
+~~~
 
 
 
-hmr：Hot-module-replacement（热模块更新）
 
-作用：在修改完文件之后，在界面上只更新相应修改的部分，不会将页面重新渲染
+
+
+
+
+
+
 
 
 
