@@ -326,3 +326,164 @@ module.expotrs = {
 ### 3.3 自定义服务器
 
 - 知道即可，实现略
+
+
+
+## 四. Eslint的使用
+
+### 4.1 Eslint介绍
+
+> **Eslint是什么：**在一个团队协作的项目里面，每个人的代码风格会有所差异，为了指定统一的编程风格，提高团队代码的规范性，我们就需要使用Eslint
+
+
+
+### 4.2 Eslint基本使用
+
+**安装：**
+
+```shell
+npm install eslint -D
+```
+
+**配置文件：**
+
+```shell
+npx eslint --init
+```
+
+- 以问答形式的方式，选择响应的规则
+
+- 完成配置之后，在项目目录下会多出一个`.eslintrc.js`文件，即Eslint的配置文件
+
+**代码检测：**
+
+> 执行代码检测的方法有好几种，接下来我们来一个个学习
+
+- 在执行代码检测之前，我们来更换一下Eslint的默认解析器，将其替换为 `babel-eslint`
+
+~~~js
+// .eslintrc.js
+
+module.exports = {
+	"extends": "airbnb",
+    "parser": "babel-eslint",
+};
+~~~
+
+1. 通过命令行查看代码检测结果
+
+   - 在项目目录下运行如下命令即可，控制台会将我们所有不合规范的代码打印出来
+   - 缺点：使用控制控制台查看错误警告不方便
+
+   ~~~shell
+   npx eslint src
+   ~~~
+
+2. 使用 VsCode的Eslint插件
+   
+   - 在安装了Eslint插件的前提下，如果我们的项目中使用了Eslint规范，并且项目目录中配置了 .eslintrc.js文件夹，那么，不符合我们Eslint的代码会直接在我们的代码中提示出来，方便修改
+
+
+
+### 4.3 在Webpack中使用Eslint
+
+> **eslint-loader：**可以在webpack中安装 eslint-loader 来实现代码规范检测的功能
+>
+> **注意：**使用eslint-loader之前，需要完成上述的Eslint配置
+
+**1. 安装 eslint-loader**
+
+**2. 使用 eslint-loader**
+
+- 在webpack.config.js文件中添加如下配置即可
+  - 在devServer中添加
+  - 在js相关的loader中，添加 eslint-loader
+  - 在该模式下，如果我们的代码不符合规范，则当我们打开浏览器访问我们的界面的时候，会有一个错误弹出层，告诉我们具体的错误信息，直到我们解决完所有的错误，界面才会显示出来
+
+~~~js
+// webpack.config.js
+
+module.exports = {
+    //...
+    devServer: {
+        overlay: true
+    },
+    module: {
+        rules: [
+            { 
+                test: /\.js$/, 
+                exclude: /node_modules/, 
+                use: ['babel-loader', 'eslint-loader']
+            }
+        ]
+	}
+}
+
+
+~~~
+
+
+
+### 4.4 Eslint 配置参考
+
+[Eslint官网配置](https://eslint.org/docs/user-guide/configuring)
+
+[webpak: Eslint-loader配置](https://webpack.js.org/loaders/eslint-loader/)
+
+
+
+## 五. webpack性能优化
+
+### 5.1 提升webpack打包速度
+
+1. **跟上技术的迭代，使用新版本的工具**
+   - Node，Npm，Yarn
+
+2. **在尽可能少的模块上使用loader**
+   - 减少loader的作用范围
+
+3. **合理的使用插件，最好是官网推荐的，一般性能会好一些**
+
+4. **resolve参数合理配置**
+
+5. **控制包文件大小**
+
+6. **thread-loader，parallel-webpak，happypack多进程打包**
+7. **合理使用 sourceMap**
+8. **结合 stats 分析打包结果**
+9. **开发环境内存编译**
+
+10. **开发环境无用插件剔除**
+
+
+
+## 六. webpack调试小技巧
+
+> 在我们开发loader或者plugin或者开发自己的代码的时候，我们可以使用如下技巧来实现断点调试的功能
+
+**1. 在package.json文件中添加如下打包命令**
+
+~~~json
+// package.json
+//依然使用webpack命令进行打包，只不过我们增加了 --inspect --inspect-brk参数
+
+"scripts": {
+    "debuge": "node --inspect --inspect-brk node_modules/webpack/bin/webpack.js"
+}
+~~~
+
+**2.我们可以在我们要打断点的地方添加上如下代码**
+
+~~~js
+// webpack打包过程中，任意你想打断点的文件
+
+//在你想要打断点的位置
+debugger;
+~~~
+
+**3. 打好断点之后，我们使用 npm run debuge打包文件，控制台会显示断点调试已开启**
+
+**4. 打开任意的浏览器界面，打开调试台，会看增加了如下图标，点击即可进入我们的代码断点调试界面**
+
+![](./imgs/webpack-debuge-skill.jpg)
+
