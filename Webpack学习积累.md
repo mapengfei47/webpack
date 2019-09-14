@@ -487,3 +487,42 @@ debugger;
 
 ![](./imgs/webpack-debuge-skill.jpg)
 
+
+
+## 七. 在React和Vue中使用webpack
+
+### 7.1 React
+
+> **脚手架：create-react-app**
+>
+> **描述：**通过脚手架创建React项目之后，脚手架会隐藏webpack的默认配置，我们可以通过 `npm run eject`命令来让Webpack的配置显示到项目文件夹，然后根据自己的需要，手动的修改配置webpack的配置
+>
+> **注意：**在React中，可以直接操作webpack的配置，这点不同于Vue
+
+**使用：**
+
+略；详情参考如下
+
+[Create React App官网](https://create-react-app.dev/docs/getting-started)
+
+[webpack官网](https://webpack.js.org/)
+
+
+
+### 7.2 Vue
+
+> **脚手架：vue-cli**
+>
+> **描述：**与React不同的是，通过Vue脚手架创建的Vue项目，我们无法查看webpack的配置，但是，Vue帮我们封装了webpack，我们可以通过Vue封装的配置，来实现对webpack配置的修改
+>
+> **配置文档：**Vue-cli配置参考（即对webpack的封装，底层操作的还是webpack）
+
+**使用：**
+
+- 在项目根目录创建 `vue.config.js`
+- 根据Vue-cli配置参考中的配置，修改webpack的配置
+
+- 具体使用略，详情可参考如下文档
+
+[Vue-cli配置参考](https://cli.vuejs.org/zh/config/)
+
