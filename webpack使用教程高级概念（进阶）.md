@@ -315,3 +315,215 @@ module.exports = (env) => {
 
 ~~~
 
+
+
+## 十. 编写一个Loader
+
+### 10.1 同步loader
+
+1. 新建文件夹，my-loader
+2. 初始化文件夹：`npm init -y`
+
+3. 在my-loader文件夹下新建loaders文件夹，存放我们的loader文件
+
+   - 我们创建一个Loader，功能是替换掉我们js文件中的某个字符串
+   - 新建 replaceLoader，文件内容如下
+
+   ~~~js
+   // replaceLoader.js
+   // 
+   module.exports = function(source){
+       return source.replace('myname','world')
+   
+   }
+   ~~~
+
+   
+
+4. 新建src文件夹
+
+   - 新建index.js文件，随便写点代码，例如
+
+   ~~~js
+   // index.js
+   
+   console.log('hello myname')
+   ~~~
+
+5. 在项目目录下面新建 webpack.config.js 文件
+
+   - 指定 mode以及打包入门和出口
+   - 为js文件配置我们自己写好的loader
+
+   ~~~js
+   const path = require('path')
+   
+   module.exports = {
+       mode: 'development',
+       entry: {
+           main: './src/index.js'
+       },
+       output: {
+           path: path.resolve(__dirname,'./dist'),
+           filename: '[name].js'
+       },
+       module: {
+           rules: [
+                       {
+                           loader: path.resolve(__dirname,'./loaders/replaceLoader.js')
+                       }
+                   ]
+               }
+           ]
+       }
+   }
+   ~~~
+
+6. 最后打包文件，发现dist目录下的main.js文件中最终打印的事 hello world，即替换成功
+
+### 10.2 异步loader
+
+1. 在loader文件夹下创建 asyncReplaceLoad
+
+   - 异步的loader文件入口
+
+   ~~~js
+   // asyncReplaceLoader
+   
+   const loaderutils = require('loader-utils')
+   
+   module.exports = function(source){
+   
+       const options = loaderutils.getOptions(this)
+       const callback = this.async()
+   
+       setTimeout(()=>{
+           const result = source.replace('Kobe',options.name)
+           callback(null,result)
+       },1000)
+   
+   }
+   ~~~
+
+2. 在 webpack.config.js文件中增加loader
+
+   ~~~js
+   const path = require('path')
+   
+   module.exports = {
+       mode: 'development',
+       entry: {
+           main: './src/index.js'
+       },
+       output: {
+           path: path.resolve(__dirname,'./dist'),
+           filename: '[name].js'
+       },
+       module: {
+           rules: [
+               {
+                   test:/\.js$/,
+                   use: [
+                       {
+                           loader: path.resolve(__dirname,'./loaders/asyncReplaceLoader.js'),
+                           options: {
+                               name: 'world'
+                           }
+                       },
+                       {
+                           loader: path.resolve(__dirname,'./loaders/replaceLoader.js'),
+                           options: {
+                               name: 'Kobe'
+                           }
+                       }
+                   ]
+               }
+           ]
+       }
+   }
+   ~~~
+
+   
+
+## 十一. 编写一个Plugin
+
+> 在本章，我们将介绍如何实现一个简单的plugin，让大家知道基本的实现的基本思路
+>
+> **插件功能：**在打包文件的时候，帮我们生成一个版本文件，记录我们的版本相关信息
+
+**1. 创建文件夹，my-plugin，使用 npm init -y 命令初始化文件夹,并安装webpack和webpack-cli模块**
+
+**2. 创建webpack.config.js，配置基本的webpack打包配置**
+
+~~~js
+// webpack.config.js
+const path = require('path')
+
+module.exports = {
+    mode: 'development',
+    entry: {
+        main: path.resolve(__dirname,'./src/index.js')
+    },
+    output: {
+        path: path.resolve(__dirname,'./dist'),
+        filename: '[name].js'
+    }
+}
+~~~
+
+**3. 项目根目录创建 src文件夹，并在src文件夹下面创建index.js文件，用于测试**
+
+~~~js
+// index.js
+console.log('hello world')
+~~~
+
+**4. 在项目根目录创建plugings文件夹，用来存储plugin文件**
+
+**5. 在plugins文件夹下创建一个类（<font color=red>注意：这里不用于loader，loader是function，而plugin是一个类</font>）**
+
+~~~js
+// copyright-webpack-plugin.js
+
+class CopyrightWebpackPlugin{
+    // 如下为构造函数，可以通过 options参数获取plugin中传递过来的options参数，同时，在plugin被new的时候，会调用，在这里非必要，如果我们不显示声明，会有默认的构造函数
+    // constructor(options){
+    //     console.log(options)
+    //     console.log('插件被使用了...')
+    // }
+	
+    // 插件发生作用调用的方法，这里存在很多类似于生命周期的钩子函数，具体清参考webpack官网，documentation下的，API目录下的Plugins中的Compiler Hooks
+    //这里实现的功能是，在打包完成之前，通过向compilation.assets对象中添加一个属性，来实现创建我们版本文件的目的
+    apply(compiler){
+        compiler.hooks.emit.tapAsync('Copyright-webpack-plugin',(compilation,callback)=>{
+            compilation.assets['copyright.txt']={
+                source: function(){
+                    return 'copyright by mapengfei'
+                },
+                size: function(){
+                    return 22
+                }
+            }
+            callback()
+        })
+    }
+}
+
+module.exports = CopyrightWebpackPlugin
+~~~
+
+**6. 使用plugin**
+
+~~~js
+// webpack.config.js
+
+const copyrightWebpackPlugin = require('./plugins/copyright-webpack-plugin')
+
+module.exports = {
+    //...
+    plugins: [
+        new copyrightWebpackPlugin()
+    ]
+}
+~~~
+
