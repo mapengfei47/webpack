@@ -13,7 +13,7 @@
   "license": "ISC",
   "dependencies": {
     "hash-sum": "^2.0.0",
-    "jquery": "^3.4.1",
+    "jquery": "^3.5.0",
     "vue": "^2.6.10",
     "vue-router": "^3.0.7"
   },
