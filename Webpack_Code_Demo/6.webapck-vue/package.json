@@ -25,7 +25,7 @@
     "bootstrap": "^4.3.1",
     "css-loader": "^3.1.0",
     "file-loader": "^4.1.0",
-    "html-webpack-plugin": "^3.2.0",
+    "html-webpack-plugin": "^5.5.0",
     "less": "^3.9.0",
     "less-loader": "^5.0.0",
     "node-sass": "^4.12.0",
@@ -37,7 +37,7 @@
     "vue-loader": "^15.7.1",
     "vue-template-compiler": "^2.6.10",
     "webpack": "^4.36.1",
-    "webpack-cli": "^3.3.6",
+    "webpack-cli": "^3.3.12",
     "webpack-dev-server": "^3.7.2"
   }
 }
